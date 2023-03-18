@@ -6,23 +6,18 @@ use App\Models\Client;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Http\Resources\ClientResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return Client::with('user')->get();
+        return ClientResource::collection(Client::with('user')->get());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreClientRequest $request)
     {
         DB::transaction(function () use ($request) {
@@ -41,17 +36,11 @@ class ClientController extends Controller
         return response()->json(status: JsonResponse::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Client $client)
     {
-        return $client->load('user');
+        return new ClientResource($client->load('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateClientRequest $request, Client $client)
     {
         DB::transaction(function() use($request, $client) {
@@ -74,9 +63,6 @@ class ClientController extends Controller
         });
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Client $client)
     {
         $client->delete();

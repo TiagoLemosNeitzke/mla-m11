@@ -33,7 +33,6 @@ class ClientController extends Controller
             ]);
         });
 
-
         return response()->json(status: JsonResponse::HTTP_CREATED);
     }
 

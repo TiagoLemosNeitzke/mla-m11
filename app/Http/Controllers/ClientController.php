@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Client;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\ClientResource;
+use App\Http\Resources\ClientCollection;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
-use App\Http\Resources\ClientResource;
-use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
     public function index()
     {
-        return ClientResource::collection(Client::with('user')->get());
+        return new ClientCollection(Client::with('user')->paginate());
     }
 
     public function store(StoreClientRequest $request)

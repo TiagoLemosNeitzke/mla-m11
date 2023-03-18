@@ -13,7 +13,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        return Client::with('user')->get();
     }
 
     /**
@@ -29,7 +29,7 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-        //
+        return $client->load('user');
     }
 
     /**

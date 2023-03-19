@@ -25,11 +25,11 @@ class AuthController extends Controller
 
         if ($user->isAdmin) {
             return [
-             'access_token' => $user->createToken($user->name.$user->created_at, ['client:admin'])->plainTextToken,
+             'access_token_admin' => $user->createToken($user->name.$user->created_at, ['client:admin'])->plainTextToken,
             ];
         } else {
             return [
-                'access_token_store' => $user->createToken($user->name.$user->created_at, ['client:index'])->plainTextToken,
+                'access_token_user' => $user->createToken($user->name.$user->created_at, ['client:index'])->plainTextToken,
             ];
         }
     }

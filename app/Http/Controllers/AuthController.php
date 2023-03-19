@@ -17,18 +17,24 @@ class AuthController extends Controller
     {
         $user = User::where('email', $request->get('username'))->first();
 
-        if(!$user || !Hash::check($request->get('password'), $user->password)) {
+        if (!$user || !Hash::check($request->get('password'), $user->password)) {
             throw ValidationException::withMessages([
                 'credentials' => 'The credentials are incorrect.'
             ]);
         }
 
-        return [
-            'access_token' => $user->createToken($user->name.$user->created_at)->plainTextToken
-        ];
+        if ($user->isAdmin) {
+            return [
+             'access_token' => $user->createToken($user->name.$user->created_at, ['client:admin'])->plainTextToken,
+            ];
+        } else {
+            return [
+                'access_token_store' => $user->createToken($user->name.$user->created_at, ['client:index'])->plainTextToken,
+            ];
+        }
     }
 
-    public function logout() 
+    public function logout()
     {
         $user = auth()->user();
 

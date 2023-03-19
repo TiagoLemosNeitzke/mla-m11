@@ -16,11 +16,15 @@ class ClientController extends Controller
 {
     public function index()
     {
+        abort_if(!auth()->user()->tokenCan('client:index'), 401, 'Unauthorized.');
+
         return new ClientCollection(Client::with('user')->paginate());
     }
 
     public function store(StoreClientRequest $request)
     {
+        abort_if(!auth()->user()->tokenCan('client:admin'), 401, 'Unauthorized.');
+        
         DB::transaction(function () use ($request) {
             $user = User::create([
                 'email' => $request->get('email'),
@@ -43,7 +47,9 @@ class ClientController extends Controller
 
     public function update(UpdateClientRequest $request, Client $client)
     {
-        DB::transaction(function() use($request, $client) {
+        abort_if(!auth()->user()->tokenCan('client:admin'), 401, 'Unauthorized.');
+
+        DB::transaction(function () use ($request, $client) {
             $clientName = $request->get('name', $client->name);
 
             $userEmail = $request->get('email', $client->user->email);
@@ -65,6 +71,8 @@ class ClientController extends Controller
 
     public function destroy(Client $client)
     {
+        abort_if(!auth()->user()->tokenCan('client:admin'), 401, 'Unauthorized.');
+
         $client->delete();
 
         return response()->json(status: JsonResponse::HTTP_NO_CONTENT);

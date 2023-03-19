@@ -27,4 +27,14 @@ class StoreClientRequest extends FormRequest
             'password' => 'required'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Nome é obrigatório.',
+            'email.required' => 'Email é obrigatório.',
+            'email.email' => 'Forneça um formato válido de email.',
+            'password.required' => 'Senha é obrigatório.'
+        ];
+    }
 }
